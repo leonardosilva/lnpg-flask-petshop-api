@@ -116,6 +116,36 @@ class DataHandler:
 
         return filtered_results
 
+    def delete(self, id):
+        exist = self.get_by_id(id)
+        if not exist:
+            raise Exception("ID não existe")
+        
+        data = self.list_all()
+        data_filtered = filter(lambda item: item["id"] != str(id), data)
+
+        with open(self.filename, "w", newline="") as f:
+            writer = csv.writer(f)
+            writer.writerow(new_data)
+        
+    def update(self, data: dict):
+        exist = self.get_by_id(data.get("id"))
+        if not exist:
+            raise Exception("ID não existe")
+        
+        all_data = self.list_all()
+        new_data = []
+
+        for item in all_data:
+            if item.get("id") == data.get("id"):
+                new_item = {**item, **data}
+            else:
+                new_data.append(item)
+
+        with open(self.filename, "w", newline="") as f:
+            writer = csv.writer(f)
+            writer.writerow(new_data)
+
             
 
     
