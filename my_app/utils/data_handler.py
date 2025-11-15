@@ -1,6 +1,7 @@
 import csv
 from flask import current_app
 import os
+from typing import List, Dict, Any
 
 class DataHandler:
     def __init__(self, csv_filename: str):
@@ -27,14 +28,13 @@ class DataHandler:
             
             return new_list
         
-    def create(self, new_data: list):
-        exist = self.get_by_id(new_data[0])
-        if exist:
-            raise Exception("ID já existe")
-        
+    def create(self, data: dict):
+        data["id"] = self.get_last_id() + 1
+        headers = self.get_header_order()
+
         with open(self.filename, "a", newline="") as f:
             writer = csv.writer(f)
-            writer.writerow(new_data)
+            writer.writerow([data.get(key) for key in headers])
     
     def get_by_id(self, id):
         data = self.list_all()
@@ -42,7 +42,7 @@ class DataHandler:
         value = list(filter(lambda item: item["id"] == str(id), data))
         return value[0] if len(value) > 0 else None
     
-    def _check_criterion(self, item_value, operator, criterion_value):
+    def check_criterion(self, item_value, operator, criterion_value):
         op = operator.upper()
 
         if item_value is None:
@@ -87,6 +87,7 @@ class DataHandler:
                     {"key": "nome",\n "operator": EQUAL or NOT_EQUAL or CONTAINS or LESS_THAN or MORE_THAN or LESS_THAN_OR_EQUAL or MORE_THAN_OR_EQUAL,\n "value": "Rex"},\n
                 ]
             }"""
+        
         data = self.list_all()
         
         logic = filters.get("logic", "AND").upper()
@@ -99,7 +100,7 @@ class DataHandler:
         for item in data:
             
             check_results = (
-                self._check_criterion(
+                self.check_criterion(
                     item.get(c["key"]),
                     c["operator"],
                     c["value"]
@@ -122,11 +123,27 @@ class DataHandler:
             raise Exception("ID não existe")
         
         data = self.list_all()
+
         data_filtered = filter(lambda item: item["id"] != str(id), data)
+        new_data = self.json_to_csv_array(data_filtered)
 
         with open(self.filename, "w", newline="") as f:
             writer = csv.writer(f)
-            writer.writerow(new_data)
+            writer.writerows(new_data)
+
+    def get_header_order(self):
+        with open(self.filename, "r", newline="") as f:
+            data = list(csv.reader(f))
+            return list(map(lambda item: item.strip(), data[0]))
+
+    def json_to_csv_array(self, data: List[Dict[str, Any]]) -> List[List[Any]]:
+        headers = self.get_header_order()
+        csv_data = [headers]
+        for item in data:
+            row = [item.get(key, "") for key in headers]
+            csv_data.append(row)
+
+        return csv_data
         
     def update(self, data: dict):
         exist = self.get_by_id(data.get("id"))
@@ -137,15 +154,24 @@ class DataHandler:
         new_data = []
 
         for item in all_data:
-            if item.get("id") == data.get("id"):
+            if item.get("id") == str(data.get("id")):
                 new_item = {**item, **data}
+                new_data.append(new_item)
             else:
                 new_data.append(item)
 
+        new_data = self.json_to_csv_array(new_data)
         with open(self.filename, "w", newline="") as f:
             writer = csv.writer(f)
-            writer.writerow(new_data)
+            writer.writerows(new_data)
 
-            
+    def get_last_id(self):
+        all_data = self.list_all()
+
+        if not all_data:
+            return 0
+        
+        last_id = max([int(item.get("id", 0)) for item in all_data])
+        return last_id
 
     
