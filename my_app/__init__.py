@@ -10,8 +10,10 @@ def create_app():
         pass
 
     from .api.clients import clients_bp
-    
+    from .api.appointments import appointments_bp
+
     app.register_blueprint(clients_bp, url_prefix='/clients')
+    app.register_blueprint(appointments_bp, url_prefix='/appointments')
 
     @app.route('/health')
     def health_check():
