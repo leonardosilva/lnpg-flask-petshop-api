@@ -11,9 +11,11 @@ def create_app():
 
     from .api.clients import clients_bp
     from .api.appointments import appointments_bp
+    from .api.pets import pets_bp
 
     app.register_blueprint(clients_bp, url_prefix='/clients')
     app.register_blueprint(appointments_bp, url_prefix='/appointments')
+    app.register_blueprint(pets_bp, url_prefix='/pets')
 
     @app.route('/health')
     def health_check():
