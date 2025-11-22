@@ -1,10 +1,12 @@
 from flask import Blueprint, jsonify, request
 from ..services.appointments import Appointments
 from ..utils.validate import schemaValidate
+from flask_jwt_extended import jwt_required
 
 appointments_bp = Blueprint('appointments', __name__)
 
 @appointments_bp.route('/', methods=['GET'])
+@jwt_required()
 def get_Appointments():
     appointments = Appointments()
     filters = request.args.to_dict()
@@ -23,6 +25,7 @@ def get_Appointments():
     }), 200
 
 @appointments_bp.route('/<int:appointment_id>', methods=['GET'])
+@jwt_required()
 def get_appointment_by_id(appointment_id):
     appointments = Appointments()
     appointment = appointments.get_by_id(appointment_id)
@@ -40,6 +43,7 @@ def get_appointment_by_id(appointment_id):
 
 
 @appointments_bp.route('/', methods=['POST'])
+@jwt_required()
 def create_appointment():
     data = request.json
 
@@ -61,6 +65,7 @@ def create_appointment():
     return jsonify({ "success": True }), 201
 
 @appointments_bp.route('/<int:appointment_id>', methods=['DELETE'])
+@jwt_required()
 def delete_appointment(appointment_id):
     appointments = Appointments()
     try:
@@ -75,6 +80,7 @@ def delete_appointment(appointment_id):
     return jsonify({ "success": True }), 200
 
 @appointments_bp.route('/<int:appointment_id>', methods=['PATCH'])
+@jwt_required()
 def update_appointment(appointment_id):
     data = request.json
     validation_error = schemaValidate(["id", "pet_id"], data, False)

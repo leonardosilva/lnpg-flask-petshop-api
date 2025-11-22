@@ -6,6 +6,7 @@ from flask_jwt_extended import jwt_required
 clients_bp = Blueprint('clients', __name__)
 
 @clients_bp.route('/', methods=['GET'])
+@jwt_required()
 def get_clients():
     clients = Clients()
     filters = request.args.to_dict()
@@ -24,6 +25,7 @@ def get_clients():
     }), 200
 
 @clients_bp.route('/<int:client_id>', methods=['GET'])
+@jwt_required()
 def get_client_by_id(client_id):
     clients = Clients()
     client = clients.get_by_id(client_id)
@@ -41,6 +43,7 @@ def get_client_by_id(client_id):
 
 
 @clients_bp.route('/', methods=['POST'])
+@jwt_required()
 def create_client():
     data = request.json
 
@@ -63,6 +66,7 @@ def create_client():
     return jsonify({ "success": True }), 201
 
 @clients_bp.route('/<int:client_id>', methods=['DELETE'])
+@jwt_required()
 def delete_client(client_id):
     clients = Clients()
     try:
@@ -78,6 +82,7 @@ def delete_client(client_id):
     return jsonify({ "success": True }), 200
 
 @clients_bp.route('/<int:client_id>', methods=['PATCH'])
+@jwt_required()
 def update_client(client_id):
     data = request.json
     validation_error = schemaValidate(["id", "created_at"], data, False)
