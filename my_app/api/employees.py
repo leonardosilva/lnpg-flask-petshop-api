@@ -1,4 +1,5 @@
-from flask import Blueprint, jsonify, request
+from flask import  jsonify, request
+from flask_smorest import Blueprint
 from ..services.employees import Employees
 from ..utils.validate import schemaValidate
 from flask_jwt_extended import jwt_required

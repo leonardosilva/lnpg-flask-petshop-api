@@ -67,7 +67,30 @@ class Appointments:
         return None
     
     def search(self, filters: dict):
+        pets = Pets()
+        services = Services()
+        employees = Employees()
+
+        entities = {
+            "pet": pets,
+            "service": services,
+            "employee": employees,
+        }
+
+        relationship_filters = entities.keys()
         filters_to_remove = ["logic", "operator"]
+
+        for key, value in filters.copy().items():
+            if key in relationship_filters:
+                entitie = entities.get(key).search({
+                    "name": value,
+                    "operator": filters.copy().get("operator", "CONTAINS")
+                })
+                if entitie:
+                    filters[f"{key}_id"] = entitie[0].get("id")
+                    del filters[key]
+                    
+                
         data = self.handler.search({
             "logic": filters.get("logic", "AND"),
             "criteria": list(filter(lambda item: item.get("key", "") not in filters_to_remove,[{"key": key, "value": value, "operator": filters.get("operator", "CONTAINS")} for key,value in filters.items()]))

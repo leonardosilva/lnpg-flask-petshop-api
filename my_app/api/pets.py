@@ -1,4 +1,5 @@
-from flask import Blueprint, jsonify, request
+from flask import  jsonify, request
+from flask_smorest import Blueprint
 from ..services.pets import Pets  
 from ..utils.validate import schemaValidate
 

@@ -1,10 +1,11 @@
-from flask import Blueprint, jsonify, request
+from flask import  jsonify, request
+from flask_smorest import Blueprint
 from ..services.services import Services
 from ..utils.validate import schemaValidate
 
 services_bp = Blueprint('services', __name__)
 
-@clients_bp.route('/', methods=['GET'])
+@services_bp.route('/', methods=['GET'])
 def get_services():
     services = Services()
     filters = request.args.to_dict()

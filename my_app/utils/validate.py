@@ -1,6 +1,7 @@
 from typing import List, AnyStr
 from flask import jsonify
 from datetime import datetime as dt, date
+from marshmallow import Schema, fields
 
 def schemaValidate(list_fields: List[AnyStr], data: dict, missing = True):
     if missing:
@@ -47,3 +48,34 @@ def validateScheduledAt(date_string: str, date_format='%Y-%m-%dT%H:%M:%S.%f'):
         except ValueError:
             return False
    
+
+class ValidationFailedSchema(Schema):
+    success = fields.Boolean(
+        required=True,
+        metadata={
+            "example": False
+        }
+    )
+    error = fields.String(
+        required=True,
+        metadata={
+            "description": "Descrição do erro",
+            "example": "Campos obrigatórios estão faltando ou estão vazios."
+        }
+    )
+    missing = fields.List(
+        fields.String(),
+        required=False,
+        metadata={
+            "description": "Array com a lista de campos faltando",
+            "example": ["email", "password"]
+            }
+        )
+    blocked = fields.List(
+        fields.String(),
+        required=False,
+        metadata={
+            "description": "Array com a lista de campos bloqueados",
+            "example": ["id", "created_at"]
+            }
+        )
