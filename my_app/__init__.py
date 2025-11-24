@@ -67,12 +67,14 @@ def create_app():
     from .api.pets import pets_bp
     from .api.employees import employees_bp
     from .api.auth import auth_bp
+    from .api.services import services_bp
 
     api.register_blueprint(auth_bp, url_prefix='/auth')
-    api.register_blueprint(clients_bp, url_prefix='/clients')
-    api.register_blueprint(appointments_bp, url_prefix='/appointments')
-    api.register_blueprint(pets_bp, url_prefix='/pets')
+    api.register_blueprint(services_bp, url_prefix='/services')
     api.register_blueprint(employees_bp, url_prefix='/employees')
+    api.register_blueprint(clients_bp, url_prefix='/clients')
+    api.register_blueprint(pets_bp, url_prefix='/pets')
+    api.register_blueprint(appointments_bp, url_prefix='/appointments')
 
     jwt = JWTManager(app)
     

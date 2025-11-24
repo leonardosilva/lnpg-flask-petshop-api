@@ -28,15 +28,15 @@ class Employees:
         data.pop("password")
         return data
     
-    def search(self, filters: dict, include_password: bool=False):
+    def search(self, filters: dict, include_password: bool = False):
         filters_to_remove = ["logic", "operator"]
         data = self.handler.search({
             "logic": filters.get("logic", "AND"),
             "criteria": list(filter(lambda item: item.get("key", "") not in filters_to_remove,[{"key": key, "value": value, "operator": filters.get("operator", "CONTAINS")} for key,value in filters.items()]))
         })
         new_data = []
-        for d in data:
-            if not include_password:
+        if not include_password:
+            for d in data:
                 d.pop("password")
             new_data.append(d)
-        return new_data
+        return new_data if not include_password else data

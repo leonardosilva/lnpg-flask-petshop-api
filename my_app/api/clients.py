@@ -5,6 +5,7 @@ from ..services.clients import Clients
 from ..utils.validate import schemaValidate, ValidationFailedSchema
 from ..schemas.clients import GetClientsResponseSchema, GetClientsByIDResponseSchema, GetClientsByIDResponseNoutFoundSchema, CreateClientSchema, CreateClientResponseFailedSchema, DeleteClientResponseFailedSchema, UpdateClientResponseFailedSchema, UpdateClientSchema
 from ..schemas.generic import GenericSuccessSchema
+
 clients_bp = Blueprint('clients', __name__)
 
 @clients_bp.route('/', methods=['GET'])
