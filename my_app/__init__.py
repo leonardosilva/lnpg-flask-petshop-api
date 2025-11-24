@@ -10,7 +10,7 @@ def create_app():
     load_dotenv()
     app = Flask(__name__, instance_relative_config=True) 
     
-    app.config["API_TITLE"] = "Petshop FLAK API"
+    app.config["API_TITLE"] = "Petshop FLASK API"
     app.config["API_VERSION"] = "v1"
     app.config["OPENAPI_VERSION"] = "3.0.2"
     app.config["OPENAPI_URL_PREFIX"] = "/"
@@ -105,4 +105,5 @@ def create_app():
     def health_check():
         return "OK", 200
     
+
     return app

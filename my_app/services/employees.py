@@ -28,7 +28,7 @@ class Employees:
         data.pop("password")
         return data
     
-    def search(self, filters: dict):
+    def search(self, filters: dict, include_password: bool=False):
         filters_to_remove = ["logic", "operator"]
         data = self.handler.search({
             "logic": filters.get("logic", "AND"),
@@ -36,6 +36,7 @@ class Employees:
         })
         new_data = []
         for d in data:
-            d.pop("password")
+            if not include_password:
+                d.pop("password")
             new_data.append(d)
         return new_data

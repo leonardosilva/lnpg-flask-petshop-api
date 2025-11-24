@@ -10,7 +10,7 @@ class Auth:
 
         employee = employees.search({
             "email": email
-        })
+        }, include_password=True)
 
         if employee and check_password_hash(employee[0].get("password", None), password):
             user_data = employee[0]
